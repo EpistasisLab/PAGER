@@ -1,0 +1,130 @@
+---
+title: "pager_encode"
+author: "Attri Ghosh"
+date: "2024-02-21"
+output: html_document
+---
+## This R markdown is used to encode sample genotype datasets using PAGER (Phenotype-Adjusted Genotype Encoding and Ranking). 
+Dataset 1 - Continuous Phenotype
+Dataset 2 - Discrete Phenotype 
+
+## STEP 1 - Import all the required packages
+
+```{r setup, include=FALSE}
+# install all the required packages
+library(dplyr)
+library(caret)
+```
+
+
+## STEP 2 - Define PAGER ENCODING function
+
+```{r setup, include=TRUE}
+# Function to perform PAGER encoding
+pager_encode <- function(genotypes, phenotype) {
+  
+  # Create an empty dataframe to store the PAGER encoded genotypes
+  pager_encoded_genotypes <- data.frame(matrix(ncol = ncol(genotypes), nrow = nrow(genotypes)))
+  colnames(pager_encoded_genotypes) <- colnames(genotypes)
+  
+  # Create an empty dataframe to store the SNPs with missing genotypes
+  missing_genotypes_df <- data.frame(SNP_NAME = character(), MISSING_GENOTYPES = character(), stringsAsFactors = FALSE)
+  
+  # Iterate through the columns of the genotypes dataframe to calculate the PAGER encoding for each SNP
+  for (column in colnames(genotypes)) {
+    
+    # Extract the single SNP from the genotypes dataframe
+    snp <- genotypes[[column]]
+    
+    # Create a dataframe with the single SNP and the phenotype
+    snp_df <- data.frame(genotype = as.numeric(snp), phenotype = as.numeric(phenotype))
+    
+    # Identify unique genotypic classes, excluding NAs
+    unique_genotypes <- na.omit(unique(snp_df$genotype))
+    
+    # Check for missing genotypic classes
+    missing_genotypes <- setdiff(c(0, 1, 2), unique_genotypes)
+    
+    # Print the missing genotypes and also add them to a dataframe to output at the end.
+    if (length(missing_genotypes) > 0) {
+      cat(paste("Missing genotypes for", column, ":", toString(missing_genotypes), "\n"))
+      snp_missing_genotype_df <- data.frame(SNP_NAME = column, MISSING_GENOTYPES = toString(missing_genotypes), stringsAsFactors = FALSE)
+      missing_genotypes_df <- bind_rows(missing_genotypes_df, snp_missing_genotype_df)
+    }
+    
+    # Check if only one genotypic class is present
+    if (length(missing_genotypes) == 2) {
+      pager_encoded_genotypes[[column]] <- snp
+      next
+    }
+    
+    # Calculate the phenotypic mean per genotypic class for non-NA genotypes
+    geno_aggregations <- snp_df %>%
+      filter(!is.na(genotype)) %>%
+      group_by(genotype) %>%
+      summarise(mean_phenotype = mean(phenotype)) %>%
+      ungroup() %>%
+      mutate(genotype = as.numeric(genotype))
+    
+    # Use the PAGER formula
+    anchor_mean <- geno_aggregations[which.min(geno_aggregations$mean_phenotype), 'mean_phenotype'] # anchor = 0 when all three genotypes are present
+    geno_aggregations$rel_dist <- as.numeric(geno_aggregations$mean_phenotype) - as.numeric(anchor_mean)
+    
+  
+    geno_aggregations$normalized_rel_dist <- (geno_aggregations$rel_dist - min(geno_aggregations$rel_dist)) / (max(geno_aggregations$rel_dist) - min(geno_aggregations$rel_dist))
+    
+    # Assign the normalized values to the corresponding SNP column
+    pager_encoded_genotypes[[column]] <- geno_aggregations$normalized_rel_dist[match(snp, geno_aggregations$genotype)]
+    
+  }
+  
+  # Return the PAGER encoded genotypes and the missing genotypes dataframe
+  return(list(pager_encoded_genotypes, missing_genotypes_df))
+}
+```
+
+
+## STEP 3 - PAGER encode Dataset 1 - Continuous Phenotype
+```{r setup, include=TRUE}
+# Read the data from the csv file
+data_continuous_phenotype <- read.csv('/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_cont.csv')
+
+# Extract the genotypes and the phenotype from the data
+genotype_columns <- data_continuous_phenotype[, -ncol(data_continuous_phenotype)]
+phenotype <- data_continuous_phenotype[, ncol(data_continuous_phenotype)]
+
+# Call the 'pager_encode' function to encode the genotypes using the PAGER formula
+result <- pager_encode(genotype_columns, phenotype)
+
+# Combine the PAGER encoded genotypes with the phenotype
+pager_encoded_genotype <- cbind(result[[1]], phenotype)
+
+# Write the PAGER encoded data to a csv file
+write.csv(pager_encoded_genotype, file = '/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_cont_pager_encoded.csv', row.names = FALSE)
+
+# Write the missing genotypes dataframe to a csv file
+write.csv(result[[2]], file = '/Users/ghosha/Documents/VSCode Projects/pager/data/missing_genotypes.csv', row.names = FALSE)
+```
+
+## STEP 4 - PAGER encode Dataset 2 - Discrete Phenotype
+```{r setup, include=TRUE}
+# Read the data from the csv file
+data_continuous_phenotype <- read.csv('/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_disc.csv')
+
+# Extract the genotypes and the phenotype from the data
+genotype_columns <- data_continuous_phenotype[, -ncol(data_continuous_phenotype)]
+phenotype <- data_continuous_phenotype[, ncol(data_continuous_phenotype)]
+
+# Call the 'pager_encode' function to encode the genotypes using the PAGER formula
+result <- pager_encode(genotype_columns, phenotype)
+
+# Combine the PAGER encoded genotypes with the phenotype
+pager_encoded_genotype <- cbind(result[[1]], phenotype)
+
+# Write the PAGER encoded data to a csv file
+write.csv(pager_encoded_genotype, file = '/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_disc_pager_encoded.csv', row.names = FALSE)
+
+# Write the missing genotypes dataframe to a csv file
+write.csv(result[[2]], file = '/Users/ghosha/Documents/VSCode Projects/pager/data/missing_genotypes.csv', row.names = FALSE)
+```
+

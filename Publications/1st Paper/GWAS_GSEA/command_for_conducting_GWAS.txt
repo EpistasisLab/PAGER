@@ -1,0 +1,16 @@
+Command to conduct GWAS
+
+# Gemma was run using singularity
+
+# Before running GWAS, create a SNP annotation file for each chromosome using the script "get_snpinfo_file.py". The SNP annotation file will contain the SNPs for that chromosome, the base pair position and the chromosome it is present on
+
+singularity exec -B /path/:/path/ docker://pgcbioinfo/gemma gemma -g chrX.bimbam -p phenotype_file -n 1 -k allExcept.chrX.GRM.cXX.txt -a chrX_snp_annotation_file -lmm 4 -o chrX.gwas.out 
+
+where 
+-g is the bimbam file for that chromosome
+-p is the phenotype file
+-n is to specify the phenotype column (Here, the phenotype column is in the first column)
+-k is the GRM file for that chromosome
+-a is the SNP annotation file
+-lmm is the linear mixed model options (4 is to specify all statistical tests)
+-o is the prefix for the gwas output
