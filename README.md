@@ -1,6 +1,6 @@
 # PAGER
 
-[![Logo](./docs/PAGER.png)]()
+[![Logo](./docs/PAGER_big.png)]()
 
 PAGER : Phenotype Adjusted Genotype Encoding and Ranking
 ==================================
