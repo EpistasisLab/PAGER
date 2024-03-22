@@ -1,6 +1,8 @@
 # PAGER
 
-[![Logo](./docs/PAGER.png)]()
+<div align="center">
+  <img src="./docs/PAGER.png" alt="Logo">
+</div>
 
 PAGER : Phenotype Adjusted Genotype Encoding and Ranking
 ==================================
