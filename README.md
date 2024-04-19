@@ -1,7 +1,7 @@
 # PAGER
 
 <div align="center">
-  <img src="./docs/PAGER.png" alt="Logo">
+  <img src="./docs/PAGER_v2.png" alt="Logo">
 </div>
 
 PAGER : Phenotype Adjusted Genotype Encoding and Ranking

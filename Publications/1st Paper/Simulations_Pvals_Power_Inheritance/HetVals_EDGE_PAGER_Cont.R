@@ -71,66 +71,108 @@ averages <- combined_cont %>%
   group_by(Inheritance) %>%
   summarise(
     Avg_of_EDGE = mean(EDGE_VALUE, na.rm = TRUE),
-    Avg_of_PAGER = mean(PAGER_VALUE_1, na.rm = TRUE)
+    Avg_of_PAGER = mean(PAGER_VALUE_1, na.rm = TRUE),
+    Median_of_EDGE = median(EDGE_VALUE, na.rm = TRUE),
+    Median_of_PAGER = median(PAGER_VALUE_1, na.rm = TRUE),
+    Var_of_EDGE = var(EDGE_VALUE, na.rm = TRUE),
+    Var_of_PAGER = var(PAGER_VALUE_1, na.rm = TRUE),
+    SD_of_EDGE = sd(EDGE_VALUE, na.rm = TRUE),
+    SD_of_PAGER = sd(PAGER_VALUE_1, na.rm = TRUE),
+    Min_of_EDGE = min(EDGE_VALUE, na.rm = TRUE),
+    Min_of_PAGER = min(PAGER_VALUE_1, na.rm = TRUE),
+    Max_of_EDGE = max(EDGE_VALUE, na.rm = TRUE),
+    Max_of_PAGER = max(PAGER_VALUE_1, na.rm = TRUE),
+    Range_of_EDGE = max(EDGE_VALUE, na.rm = TRUE) - min(EDGE_VALUE, na.rm = TRUE),
+    Range_of_PAGER = max(PAGER_VALUE_1, na.rm = TRUE) - min(PAGER_VALUE_1, na.rm = TRUE),
+    IQR_of_EDGE = IQR(EDGE_VALUE, na.rm = TRUE),
+    IQR_of_PAGER = IQR(PAGER_VALUE_1, na.rm = TRUE)
   )
 
 # Convert data from wide to long format, excluding INHERENT_pvalue for additive model
 long_data <- pivot_longer(combined_cont, cols = c("EDGE_VALUE", "PAGER_VALUE_1"),
                           names_to = "Encoding", values_to = "Het_Value")
 
-# Perform ANOVA grouped by Inheritance_Model and PValue_Type
-Ttest_results <- long_data %>%
+# Perform Wilcoxon Rank SUM Tests grouped by Inheritance_Model and PValue_Type
+Wilcox_test_results <- long_data %>%
   group_by(Inheritance) %>%
-  do(tidy(t.test(Het_Value ~ Encoding, data = .)))
+  do(tidy(wilcox.test(Het_Value ~ Encoding, data = .)))
 
 # Write to disk
 write.csv(averages, "Cont_AvgHet_All.csv", row.names = FALSE)
-write.csv(Ttest_results, "Cont_TtestHet_All.csv", row.names = FALSE)
+write.csv(Wilcox_test_results, "Cont_WilcoxHet_All.csv", row.names = FALSE)
 
 ## Within Inheritance Model for MAF = 0.1
-Discrete_filtered1 <- combined_cont %>% filter(MAFA == 0.1)
+cont_filtered1 <- combined_cont %>% filter(MAFA == 0.1)
 
 # Calculate averages for each inheritance Model
-averages1 <- Discrete_filtered1 %>%
+averages1 <- cont_filtered1  %>%
   group_by(Inheritance) %>%
   summarise(
     Avg_of_EDGE = mean(EDGE_VALUE, na.rm = TRUE),
-    Avg_of_PAGER = mean(PAGER_VALUE_1, na.rm = TRUE)
+    Avg_of_PAGER = mean(PAGER_VALUE_1, na.rm = TRUE),
+    Median_of_EDGE = median(EDGE_VALUE, na.rm = TRUE),
+    Median_of_PAGER = median(PAGER_VALUE_1, na.rm = TRUE),
+    Var_of_EDGE = var(EDGE_VALUE, na.rm = TRUE),
+    Var_of_PAGER = var(PAGER_VALUE_1, na.rm = TRUE),
+    SD_of_EDGE = sd(EDGE_VALUE, na.rm = TRUE),
+    SD_of_PAGER = sd(PAGER_VALUE_1, na.rm = TRUE),
+    Min_of_EDGE = min(EDGE_VALUE, na.rm = TRUE),
+    Min_of_PAGER = min(PAGER_VALUE_1, na.rm = TRUE),
+    Max_of_EDGE = max(EDGE_VALUE, na.rm = TRUE),
+    Max_of_PAGER = max(PAGER_VALUE_1, na.rm = TRUE),
+    Range_of_EDGE = max(EDGE_VALUE, na.rm = TRUE) - min(EDGE_VALUE, na.rm = TRUE),
+    Range_of_PAGER = max(PAGER_VALUE_1, na.rm = TRUE) - min(PAGER_VALUE_1, na.rm = TRUE),
+    IQR_of_EDGE = IQR(EDGE_VALUE, na.rm = TRUE),
+    IQR_of_PAGER = IQR(PAGER_VALUE_1, na.rm = TRUE)
   )
 
 # Convert data from wide to long format, excluding INHERENT_pvalue for additive model
-long_data1 <- pivot_longer(Discrete_filtered1, cols = c("EDGE_VALUE", "PAGER_VALUE_1"),
+long_data1 <- pivot_longer(cont_filtered1, cols = c("EDGE_VALUE", "PAGER_VALUE_1"),
                            names_to = "Encoding", values_to = "Het_Value")
 
-# Perform ANOVA grouped by Inheritance_Model and PValue_Type
-Ttest_results1 <- long_data1 %>%
+# Perform Wilcoxon Rank SUM Tests grouped by Inheritance_Model and PValue_Type
+Wilcox_test_results1 <- long_data1 %>%
   group_by(Inheritance) %>%
-  do(tidy(t.test(Het_Value ~ Encoding, data = .)))
+  do(tidy(wilcox.test(Het_Value ~ Encoding, data = .)))
 
 # Write to disk
 write.csv(averages1, "Cont_AvgHet_MAF01.csv", row.names = FALSE)
-write.csv(Ttest_results1, "Cont_TtestHet_MAF01.csv", row.names = FALSE)
+write.csv(Wilcox_test_results1, "Cont_WilcoxHet_MAF01.csv", row.names = FALSE)
 
 ## Within Inheritance Model for MAF = 0.1 and PEN_DIFF = 0.1
-Discrete_filtered2 <- Discrete_filtered1  %>% filter(PEN_DIFF == 0.1)
+cont_filtered2 <- cont_filtered1  %>% filter(PEN_DIFF == 0.1)
 
 # Calculate averages for each inheritance Model
-averages2 <- Discrete_filtered2 %>%
+averages2 <- cont_filtered2 %>%
   group_by(Inheritance) %>%
   summarise(
     Avg_of_EDGE = mean(EDGE_VALUE, na.rm = TRUE),
-    Avg_of_PAGER = mean(PAGER_VALUE_1, na.rm = TRUE)
+    Avg_of_PAGER = mean(PAGER_VALUE_1, na.rm = TRUE),
+    Median_of_EDGE = median(EDGE_VALUE, na.rm = TRUE),
+    Median_of_PAGER = median(PAGER_VALUE_1, na.rm = TRUE),
+    Var_of_EDGE = var(EDGE_VALUE, na.rm = TRUE),
+    Var_of_PAGER = var(PAGER_VALUE_1, na.rm = TRUE),
+    SD_of_EDGE = sd(EDGE_VALUE, na.rm = TRUE),
+    SD_of_PAGER = sd(PAGER_VALUE_1, na.rm = TRUE),
+    Min_of_EDGE = min(EDGE_VALUE, na.rm = TRUE),
+    Min_of_PAGER = min(PAGER_VALUE_1, na.rm = TRUE),
+    Max_of_EDGE = max(EDGE_VALUE, na.rm = TRUE),
+    Max_of_PAGER = max(PAGER_VALUE_1, na.rm = TRUE),
+    Range_of_EDGE = max(EDGE_VALUE, na.rm = TRUE) - min(EDGE_VALUE, na.rm = TRUE),
+    Range_of_PAGER = max(PAGER_VALUE_1, na.rm = TRUE) - min(PAGER_VALUE_1, na.rm = TRUE),
+    IQR_of_EDGE = IQR(EDGE_VALUE, na.rm = TRUE),
+    IQR_of_PAGER = IQR(PAGER_VALUE_1, na.rm = TRUE)
   )
 
 # Convert data from wide to long format, excluding INHERENT_pvalue for additive model
-long_data2 <- pivot_longer(Discrete_filtered2, cols = c("EDGE_VALUE", "PAGER_VALUE_1"),
+long_data2 <- pivot_longer(cont_filtered2, cols = c("EDGE_VALUE", "PAGER_VALUE_1"),
                            names_to = "Encoding", values_to = "Het_Value")
 
-# Perform ANOVA grouped by Inheritance_Model and PValue_Type
-Ttest_results2 <- long_data2 %>%
+# Perform Wilcoxon Rank SUM Tests grouped by Inheritance_Model and PValue_Type
+Wilcox_test_results2 <- long_data2 %>%
   group_by(Inheritance) %>%
-  do(tidy(t.test(Het_Value ~ Encoding, data = .)))
+  do(tidy(wilcox.test(Het_Value ~ Encoding, data = .)))
 
 # Write to disk
 write.csv(averages2, "Cont_AvgHet_MAF01_PD01.csv", row.names = FALSE)
-write.csv(Ttest_results2, "Cont_TtestHet_MAF01_PD01.csv", row.names = FALSE)
+write.csv(Wilcox_test_results2, "Cont_WilcoxHet_MAF01_PD01.csv", row.names = FALSE)
