@@ -2,9 +2,11 @@
 
 library(dplyr)
 
+################## FOR DISCRETE PHENOTYPE FILES ################
+
 # Additive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_additive_simulation_results.csv")
+data <- read.csv("/path/to/read/additive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -29,13 +31,13 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "additive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/additive_power_results.csv", row.names = FALSE)
 
 #################################################
 
 # Dominant encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_dominant_simulation_results.csv")
+data <- read.csv("/path/to/read/dominant_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -63,14 +65,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "dominant_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/dominant_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Recessive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_recessive_simulation_results.csv")
+data <- read.csv("/path/to/read/recessive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -98,14 +100,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "recessive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/recessive_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Heterosis encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_heterosis_simulation_results.csv")
+data <- read.csv("/path/to/read/heterosis_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -133,14 +135,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "heterosis_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/heterosis_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Superadditive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_superadditive_simulation_results.csv")
+data <- read.csv("/path/to/read/superadditive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -168,14 +170,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "superadditive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/superadditive_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Subadditive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_subadditive_simulation_results.csv")
+data <- read.csv("/path/to/read/subadditive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -203,14 +205,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "subadditive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/subadditive_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Overdominant encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_overdominant_simulation_results.csv")
+data <- read.csv("/path/to/read/overdominant_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -238,14 +240,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "overdominant_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/overdominant_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Underdominant encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_underdominant_simulation_results.csv")
+data <- read.csv("/path/to/read/underdominant_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -273,16 +275,16 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "underdominant_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/underdominant_power_results.csv", row.names = FALSE)
 
 
 #############################################################################################################################
 
-############# POWER ANALYSIS NON-DISCRETE/CONTINUOUS ###############
+############# FOR NON-DISCRETE/CONTINUOUS FILES ###############
 
 # Additive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_additive_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_additive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -307,13 +309,13 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/additive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/additive_power_results.csv", row.names = FALSE)
 
 #################################################
 
 # Dominant encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_dominant_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_dominant_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -341,14 +343,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/dominant_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/dominant_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Recessive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_recessive_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_recessive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -376,14 +378,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/recessive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/recessive_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Heterosis encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_heterosis_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_heterosis_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -411,14 +413,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/heterosis_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/heterosis_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Superadditive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_superadditive_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_superadditive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -446,14 +448,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/superadditive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/superadditive_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Subadditive encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_subadditive_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_subadditive_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -481,14 +483,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/subadditive_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/subadditive_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Overdominant encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_overdominant_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_overdominant_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -516,14 +518,14 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/overdominant_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/overdominant_power_results.csv", row.names = FALSE)
 
 
 #################################################
 
 # Underdominant encoding
 # read the file
-data <- read.csv("/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_underdominant_simulation_results.csv")
+data <- read.csv("/path/to/read/cont_underdominant_simulation_results.csv")
 
 # Assuming 'data' is your dataframe
 result <- data %>%
@@ -551,7 +553,7 @@ result <- result %>%
   )
 
 # Save the results to a CSV file
-write.csv(result, "/Users/ghosha/Library/CloudStorage/Box-Box/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/underdominant_power_results.csv", row.names = FALSE)
+write.csv(result, "/path/to/save/underdominant_power_results.csv", row.names = FALSE)
 
 
 ###############################################################################################

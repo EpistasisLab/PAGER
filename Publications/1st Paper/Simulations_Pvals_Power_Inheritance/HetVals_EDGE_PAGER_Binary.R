@@ -5,7 +5,7 @@
 ### This script will calculate average heterozygote values between EDGE and PAGER for comparison purposes. Discrete Phenotype
 
 ## Discrete
-setwd("/Users/fredap/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete")
+setwd("/path/to/folder")
 
 # Load necessary packages
 library(dplyr)
@@ -13,16 +13,11 @@ library(tidyr)
 library(broom)
 library(tidyverse)
 
-# Function to extract the desired pattern from the filename
+# Function to extract the first string before the first underscore from the filename
 extract_name <- function(filename) {
-  parts <- unlist(strsplit(filename, "_"))
-  if (length(parts) > 1) {
-    # Return the part of the filename between the first set of underscores
-    return(parts[2])
-  } else {
-    # If there's no underscore, return the filename without the extension
-    return(tools::file_path_sans_ext(filename))
-  }
+  parts <- unlist(strsplit(filename, "_", fixed = TRUE))
+  # Return the first segment before any underscore or the filename itself if no underscore exists
+  return(parts[1])
 }
 
 # Get a list of all CSV files in the current working directory
@@ -62,9 +57,6 @@ dataframes <- list(
 # Combine the dataframes with an additional column indicating the original dataframe name
 combined_discrete <- bind_rows(dataframes, .id = "Inheritance")
 
-# Multiply EDGE pvalue by 2 to control for multiple testing
-combined_discrete$EDGE_pvalue <- combined_discrete$EDGE_pvalue*2
-
 ## All Data
 # Calculate averages for each inheritance Model
 averages <- combined_discrete %>%
@@ -98,6 +90,7 @@ Wilcox_test_results <- long_data %>%
   do(tidy(wilcox.test(Het_Value ~ Encoding, data = .)))
 
 # Write to disk
+setwd("/path/to/folder")
 write.csv(averages, "Binary_AvgHet_All.csv", row.names = FALSE)
 write.csv(Wilcox_test_results, "Binary_WilcoxHet_All.csv", row.names = FALSE)
 
@@ -136,6 +129,7 @@ Wilcox_test_results1 <- long_data1 %>%
   do(tidy(wilcox.test(Het_Value ~ Encoding, data = .)))
 
 # Write to disk
+setwd("/path/to/folder")
 write.csv(averages1, "Binary_AvgHet_MAF01.csv", row.names = FALSE)
 write.csv(Wilcox_test_results1, "Binary_WilcoxHet_MAF01.csv", row.names = FALSE)
 
@@ -174,5 +168,6 @@ Wilcox_test_results2 <- long_data2 %>%
   do(tidy(wilcox.test(Het_Value ~ Encoding, data = .)))
 
 # Write to disk
+setwd("/path/to/folder")
 write.csv(averages2, "Binary_AvgHet_MAF01_PD01.csv", row.names = FALSE)
 write.csv(Wilcox_test_results2, "Binary_WilcoxHet_MAF01_PD01.csv", row.names = FALSE)

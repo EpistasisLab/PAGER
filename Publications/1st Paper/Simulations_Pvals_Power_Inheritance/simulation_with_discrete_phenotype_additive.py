@@ -1,11 +1,12 @@
 """This script is used to do the following for an additive inheritence pattern:
-1. Generate single SNP dataset with discrete phenotype using BAMs.
-2. Save the EDGE encodings for the corresponding dataset.
+1. Generate two (training and testing) single SNP dataset with discrete phenotype using BAMs.
+2. Save the EDGE encodings of the training dataset.
 3. Run association_study from CLARITE to get the P value of the SNP using original additive encoding.
-4. Encode the SNP using EDGE. Make sure to change 1->0.5 and 2->1 before changing the heterozygote.
-5. Run association_study from CLARITE to get the P value of the EDGE encoded SNP.
-6. Encode the SNP using PAGER.
-7. Run association_study from CLARITE to get the P value of the PAGER encoded SNP.
+4. Encode the testing dataset SNP using EDGE value derived from the training dataset. Make sure to change 1->0.5 and 2->1 before changing the heterozygote.
+5. Run association_study from CLARITE to get the P value of the EDGE encoded testing SNP.
+6. Derive PAGER values from the training dataset.
+7. Encode the testing dataset SNP using PAGER values derived from the training dataset.
+8. Run association_study from CLARITE to get the P value of the testing PAGER encoded SNP.
 """
 
 # all the import statements
@@ -54,7 +55,7 @@ variant1 = scalars.Variant("1", 1, id="rs1", ref="A", alt=["C"])
 variant2 = scalars.Variant("1", 2, id="rs2", ref="G", alt=["T"])
 
 
-def simulate_genotype(discrete, ab1,ab2,case_control_ratio,num_samples,PEN_DIFF,MAFA,train_seed):
+def simulate_genotype(discrete, ab1,ab2,case_control_ratio,num_samples,PEN_DIFF,MAFA,train_seed, include_edge=True):
     n_controls = int(num_samples*(1-case_control_ratio))
     n_cases = num_samples - n_controls
     PEN_BASE = (1-PEN_DIFF)/2
@@ -89,8 +90,10 @@ def simulate_genotype(discrete, ab1,ab2,case_control_ratio,num_samples,PEN_DIFF,
     if discrete:
         train_me = train_main.generate_case_control(
             n_cases=n_cases, n_controls=n_controls, maf1=MAFA, maf2=MAFB)
+        # train_me = train_me.sort_values(by="Outcome",ascending=False)
     else:
         train_me = train_main.generate_quantitative(n_samples=num_samples, maf1=MAFA, maf2=MAFB)
+        # train_me = train_me.sort_values(by="Outcome",ascending=False)
 
     np.random.seed(train_seed)
     Age_1 = pd.DataFrame(np.random.poisson(lam=31, size=(int(0.507*n_controls))).astype(int))
@@ -114,16 +117,20 @@ def simulate_genotype(discrete, ab1,ab2,case_control_ratio,num_samples,PEN_DIFF,
     train_cov.columns=['Outcome','SNP1','SNP2','Age', 'BMI', 'Sex','Smoking']
     train_cov = train_cov[['Outcome','SNP1','Age', 'BMI', 'Sex','Smoking']]
 
-    #starting the timer
-    edge_start_time = time.time()  
-    edge_weights_me_t = train_me.genomics.calculate_edge_encoding_values(
-        data=train_cov, outcome_variable="Outcome",covariates=['Age', 'BMI', 'Sex','Smoking'])
-    # ending the timer
-    edge_end_time = time.time()
-    elapsed_time = edge_end_time - edge_start_time
-    edge_weights_me = edge_weights_me_t.copy()
-    edge_weights_me.insert(loc=0, column="BioAct", value=ab1l)
-    edge_weights_me.insert(loc=0, column="TrainSeed", value=train_seed)
+    #starting the timer to find time required for calculate EDGE encoding value
+    edge_weights_me_t = None
+    elapsed_time = -1
+    if include_edge:
+        #starting the timer
+        edge_start_time = time.time()  
+        edge_weights_me_t = train_me.genomics.calculate_edge_encoding_values(
+            data=train_cov, outcome_variable="Outcome",covariates=['Age', 'BMI', 'Sex','Smoking'])
+        # ending the timer
+        edge_end_time = time.time()
+        elapsed_time = edge_end_time - edge_start_time
+        edge_weights_me = edge_weights_me_t.copy()
+        edge_weights_me.insert(loc=0, column="BioAct", value=ab1l)
+        edge_weights_me.insert(loc=0, column="TrainSeed", value=train_seed)
 
     #change column type to string
     train_cov['SNP1'] = train_cov['SNP1'].astype(str)
@@ -146,7 +153,7 @@ def simulate_genotype(discrete, ab1,ab2,case_control_ratio,num_samples,PEN_DIFF,
 ########### PAGER ENCODING FUNCTION ###############
 
 # This function will take in one SNP and a Phenotype, will return the PAGER encoding values for the genotypes 0,1 and 2.
-def pager_encoding(snp, phenotype):
+def pager_encoding_cpu(snp, phenotype):
     # create a dataframe with the single SNP and the phenotype
     snp_df = pd.DataFrame({'genotype': snp.astype(float), 'phenotype': phenotype.astype(float)})
 
@@ -168,6 +175,7 @@ def pager_encoding(snp, phenotype):
 
     # return geno_aggregations which is a dataframe with the PAGER encoding values, it will have three columns, genotype, mean_phenotype and rel_dist
     return geno_aggregations
+
 
 ###################################################################################################
 
@@ -197,11 +205,11 @@ num_iterations = 1000 # number of replicates
 
 # Create an empty DataFrame to store the results
 results_df = pd.DataFrame(columns=["Iteration", "Num_Samples", "Case_Control_Ratio", "MAFA", "PEN_DIFF", "EDGE_VALUE",
-                                    "PAGER_VALUE_0", "PAGER_VALUE_1", "PAGER_VALUE_2", "Original_pvalue", "EDGE_pvalue", "PAGER_pvalue", "EDGE_TIME", "PAGER_TIME"])
-
+            "PAGER_VALUE_0", "PAGER_VALUE_1", "PAGER_VALUE_2", "Original_pvalue", "EDGE_pvalue", "PAGER_pvalue",  "EDGE_TIME", "PAGER_CPU_TIME"])
 
 # Loop through the parameter settings and run the simulation
 for iteration in range(num_iterations):
+        print("Starting iteration: ", iteration)
         for case_control_ratio in case_control_ratio_values:
             for num_samples_setting in num_samples:
                 for PEN_DIFF_setting in PEN_DIFF_values:
@@ -209,6 +217,7 @@ for iteration in range(num_iterations):
                         # Generate a random train seed for each iteration
                         train_seed = random.randint(1, 1000000)
                         ab1, ab2 = work_group[2] # decides the inheritence pattern of the SNPs (0 - recessive, 1 - subadditive, 2 - additive, 3 - superadditive, 4 - dominant, 5 - heterosis, 6 - overdominant, 7 - underdominant, 8 - null )
+                        
                         # Call your simulate_genotype function with the current settings
                         train_cov, edge_value_dataframe, edge_elapsed_time = simulate_genotype(
                             discrete,
@@ -220,47 +229,63 @@ for iteration in range(num_iterations):
                             MAFA_setting,
                             train_seed
                         )
-                        
+
+                        print("EDGE encoding time: ", edge_elapsed_time)
                         edge_value = edge_value_dataframe.loc[0,'Alpha Value']
 
-                        # make a copy of the simulated data (train_cov)
-                        train_cov_copy = train_cov.copy() # to be used for PAGER encoding
+                        test_cov, _, _ = simulate_genotype(
+                        discrete,
+                        ab1,
+                        ab2,
+                        case_control_ratio,
+                        num_samples_setting,
+                        PEN_DIFF_setting,
+                        MAFA_setting,
+                        train_seed + 1000,
+                        include_edge=False
+                        )
+
+                        # Make a copy of the simulated training and testing data
+                        train_cov_pager_copy = train_cov.copy()
+                        test_cov_pager_copy = test_cov.copy()
                         
-                        # Use clarite with original unencoded data
-                        original_clarite_result = clarite.analyze.association_study(data=train_cov, outcomes="Phenotype")
+                        # Use clarite on the original/additive dataset
+                        original_clarite_result = clarite.analyze.association_study(data=test_cov, outcomes="Phenotype")
+                        print("Clarite Result: ", original_clarite_result)
                         original_pvalue = original_clarite_result.loc['SNP','pvalue'].values[0]
 
+                        # EDGE encode the testing data with EDGE value derived from the training data
+                        # Modify test_cov based on edge_value
+                        test_cov.loc[test_cov["SNP"] == 1, "SNP"] = 0.5 # just to be extra careful
+                        test_cov.loc[test_cov["SNP"] == 2, "SNP"] = 1
+                        test_cov["SNP"] = test_cov["SNP"].replace(0.5, edge_value)
 
-                        ##### Performing EDGE encoding ######
-                        # Modify train_cov based on edge_value
-                        train_cov.loc[train_cov["SNP"] == 1, "SNP"] = 0.5
-                        train_cov.loc[train_cov["SNP"] == 2, "SNP"] = 1
-                        train_cov["SNP"] = train_cov["SNP"].replace(0.5, edge_value)
-
-                        # Use clarite with EDGE encoded data
-                        edge_clarite_result = clarite.analyze.association_study(data=train_cov, outcomes="Phenotype")
+                        # Use clarite on the above created EDGE encoded testing data
+                        edge_clarite_result = clarite.analyze.association_study(data=test_cov, outcomes="Phenotype")
                         EDGE_pvalue = edge_clarite_result.loc['SNP','pvalue'].values[0]
-
-                        ##### Perform PAGER encoding - using train_cov_copy dataframe ######
-                        # start timer for PAGER
+                        
+                        # PAGER time calculation using CPU
                         pager_start_time = time.time()
-                        pager_encoding_result = pager_encoding(train_cov_copy['SNP'], train_cov_copy['Phenotype'])
+                        pager_encoding_result = pager_encoding(train_cov_pager_copy['SNP'], train_cov_pager_copy['Phenotype'])
                         # end timer for PAGER
                         pager_end_time = time.time()
-                        pager_elapsed_time = pager_end_time - pager_start_time # calculating time taken for PAGER encoding
-                        #print(pager_encoding_result)
+                        pager_cpu_elapsed_time = pager_end_time - pager_start_time
+                        print("PAGER encoding time: ", pager_cpu_elapsed_time)
 
-                        # Create a dictionary to map 'genotype' to 'rel_dist'
+                        # Create a dictionary to map 'genotype' to 'rel_dist' - Derive PAGER values from the training dataset
                         genotype_to_rel_dist = pager_encoding_result.set_index('genotype')['normalized_rel_dist'].to_dict()
 
-                        # Reencode the 'SNP' column based on the mapping of PAGER values
-                        train_cov_copy['SNP'] = train_cov_copy['SNP'].map(genotype_to_rel_dist)
+                        # Reencode the 'SNP' column based on the mapping - PAGER encode the testing dataset
+                        test_cov_pager_copy['SNP'] = test_cov_pager_copy['SNP'].map(genotype_to_rel_dist)
 
-                        # Use clarite with PAGER encoded data
-                        pager_clarite_result = clarite.analyze.association_study(data=train_cov_copy, outcomes="Phenotype")
-                        
+                        print("PAGER encoded SNP data: ", test_cov_pager_copy['SNP'])
+                        print("PAGER encoded Phenotype data: ", test_cov_pager_copy['Phenotype'])
+
+                        # Use clarite on the PAGER encoded testing dataset
+                        pager_clarite_result = clarite.analyze.association_study(data=test_cov_pager_copy, outcomes="Phenotype")
                         PAGER_pvalue = pager_clarite_result.loc['SNP','pvalue'].values[0]
-
+                        
+                        
                         # Append the results to the DataFrame
                         results_df = results_df.append({
                             "Iteration": iteration,
@@ -276,19 +301,9 @@ for iteration in range(num_iterations):
                             "EDGE_pvalue": EDGE_pvalue,
                             "PAGER_pvalue": PAGER_pvalue,
                             "EDGE_TIME": edge_elapsed_time,
-                            "PAGER_TIME": pager_elapsed_time
+                            "PAGER_CPU_TIME": pager_cpu_elapsed_time
                         }, ignore_index=True)
+                        print("Ending iteration: ", iteration)
 
 # Save the results DataFrame to a CSV file
-results_df.to_csv("/home/ghosha/common/bams_edge_pager/results/clarite_additive_simulation_results.csv", index=False)
-
-# Print the total execution time for calculate_edge_encoding_values
-total_edge_encoding_time = sum(results_df['EDGE_TIME'])
-
-# Print the total execution time for pager
-total_pager_encoding_time = sum(results_df['PAGER_TIME'])
-
-print("Total EDGE encoding time: ", total_edge_encoding_time)
-print("Total PAGER encoding time: ", total_pager_encoding_time)
-
-print("All iterations completed.")
+results_df.to_csv("/path/to/save/results.csv", index=False)

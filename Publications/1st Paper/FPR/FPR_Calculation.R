@@ -1,4 +1,4 @@
-setwd("/Users/fredap/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/FPR/null simulation")
+setwd("/path/to/folder")
 
 library(tidyverse)
 

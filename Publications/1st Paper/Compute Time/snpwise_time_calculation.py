@@ -1,5 +1,5 @@
 """This script is used to read csv files of varying number of SNPs (10, 100, 1000, 10000, 1000000) with a continuous phenotype and then 
-finding the time required to calculate the EDGE encoding value, PAGEr encoding value using CPU and GPU. """
+finding the time required to calculate the EDGE encoding value, PAGER encoding value using CPU and GPU. """
 
 # all the import statements
 import os
@@ -315,7 +315,7 @@ train_seed = seed
 result_df = pd.DataFrame(columns=['No of SNPs.', 'EDGE_TIME', 'EDGE_TIME_WITHOUT_SNP1', 'PAGER_CPU_TIME', 'PAGER_CPU_TIME_WITHOUT_SNP1', 'PAGER_GPU_TIME', 'PAGER_GPU_TIME_WITHOUT_SNP1'])
 
 
-data_folder = "/home/ghosha/common/bams_edge_pager/cpu_vs_gpu/snpwise_data_replicates/replicate_1"
+data_folder = "/path/to/folder"
 
 # Iterate through all the files in the folder to get the edge value, then pager encoding
 for filename in os.listdir(data_folder):
@@ -452,4 +452,4 @@ for filename in os.listdir(data_folder):
     }, ignore_index=True)
 
 # Save the results to a CSV file
-result_df.to_csv("/home/ghosha/common/bams_edge_pager/cpu_vs_gpu/snpwise_results/replicate_1.csv", index=False)
+result_df.to_csv("/path/to/save/replicate_1.csv", index=False)

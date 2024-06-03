@@ -5,7 +5,7 @@
 ### This script will show average p-values for a host of certain combinations within inheritance models
 
 ## Continuous
-setwd("/Users/fredap/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete")
+setwd("/path/to/folder")
 
 # Load necessary packages
 library(dplyr)
@@ -13,16 +13,11 @@ library(tidyr)
 library(broom)
 library(tidyverse)
 
-# Function to extract the desired pattern from the filename
+# Function to extract the first string before the first underscore from the filename
 extract_name <- function(filename) {
-  parts <- unlist(strsplit(filename, "_"))
-  if (length(parts) > 1) {
-    # Return the part of the filename between the first set of underscores
-    return(parts[3])
-  } else {
-    # If there's no underscore, return the filename without the extension
-    return(tools::file_path_sans_ext(filename))
-  }
+  parts <- unlist(strsplit(filename, "_", fixed = TRUE))
+  # Return the first segment before any underscore or the filename itself if no underscore exists
+  return(parts[1])
 }
 
 # Get a list of all CSV files in the current working directory
@@ -96,6 +91,7 @@ tukey_results <- long_data %>%
   })
 
 # Write to disk
+setwd("path/to/folder")
 write.csv(averages_filtered, "Cont_AvgP_All.csv", row.names = FALSE)
 write.csv(anova_results, "Cont_ANOVA_All.csv", row.names = FALSE)
 write.csv(tukey_results, "Cont_Tukey_All.csv", row.names = FALSE)
@@ -133,6 +129,7 @@ tukey_results1 <- long_data1 %>%
   })
 
 # Write to disk
+setwd("/path/to/folder")
 write.csv(averages_filtered1, "Cont_AvgP_MAF01.csv", row.names = FALSE)
 write.csv(anova_results1, "Cont_ANOVA_MAF01.csv", row.names = FALSE)
 write.csv(tukey_results1, "Cont_Tukey_MAF01.csv", row.names = FALSE)
@@ -170,6 +167,7 @@ tukey_results2 <- long_data2 %>%
   })
 
 # Write to disk
+setwd("/path/to/folder")
 write.csv(averages_filtered2, "Cont_AvgP_MAF01_PD01.csv", row.names = FALSE)
 write.csv(anova_results2, "Cont_ANOVA_MAF01_PD01.csv", row.names = FALSE)
 write.csv(tukey_results2, "Cont_Tukey_MAF01_PD01.csv", row.names = FALSE)

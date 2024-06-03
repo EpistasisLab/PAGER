@@ -3,27 +3,27 @@ library(dplyr)
 library(psych)
 library(ggplot2)
 
-setwd("/Users/fredap/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/Figures/ComputeTime")
+setwd("/path/to/folder/")
 
 # Import discrete files
-add_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/additive_discrete.csv")
-dom_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/dominant_discrete.csv")
-rec_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/recessive_discrete.csv")
-subadd_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/subadditive_discrete.csv")
-supadd_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/superadditive_discrete.csv")
-het_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/heterosis_discrete.csv")
-und_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/underdominant_discrete.csv")
-ovd_disc <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/overdominant_discrete.csv")
+add_disc <- read.csv("/path/to/folder/additive_discrete_simulations.csv")
+dom_disc <- read.csv("/path/to/folder/dominant_discrete_simulations.csv")
+rec_disc <- read.csv("/path/to/folder/recessive_discrete_simulations.csv")
+subadd_disc <- read.csv("/path/to/folder/subadditive_discrete_simulations.csv")
+supadd_disc <- read.csv("/path/to/folder/superadditive_discrete_simulations.csv")
+het_disc <- read.csv("/path/to/folder/heterosis_discrete_simulations.csv")
+und_disc <- read.csv("/path/to/folder/underdominant_discrete_simulations.csv")
+ovd_disc <- read.csv("//path/to/folder/overdominant_discrete_simulations.csv")
 
 # Import continuous files
-add_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/additive_continuous.csv")
-dom_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/dominant_continuous.csv")
-rec_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/recessive_continuous.csv")
-subadd_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/subadditive_continuous.csv")
-supadd_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/superadditive_continuous.csv")
-het_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/heterosis_continuous.csv")
-und_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/underdominant_continuous.csv")
-ovd_cont <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/cpu vs gpu/Redone_with_formula_change/overdominant_continuous.csv")
+add_cont <- read.csv("/path/to/folder/additive_continuous_simulations.csv")
+dom_cont <- read.csv("/path/to/folder/dominant_continuous_simulations.csv")
+rec_cont <- read.csv("/path/to/folder/recessive_continuous_simulations.csv")
+subadd_cont <- read.csv("/path/to/folder/subadditive_continuous_simulations.csv")
+supadd_cont <- read.csv("/path/to/folder/superadditive_continuous_simulations.csv")
+het_cont <- read.csv("/path/to/folder/heterosis_continuous_simulations.csv")
+und_cont <- read.csv("/path/to/folder/underdominant_continuous_simulations.csv")
+ovd_cont <- read.csv("/path/to/folder/overdominant_continuous_simulations.csv")
 
 ## Discrete
 # Modify dataframes and add an Inheritance column:
@@ -173,9 +173,9 @@ ggplot(result_disc, aes(x = Num_Samples)) +
   #geom_smooth(method = "lm", se = FALSE, color = "red") +  
   labs(x = "Sample Size", y = "Speed Factor Increase") + 
   ggtitle("PAGER CPU/GPU Speed Increase over EDGE (Discrete Phenotype)") +  
-  scale_y_continuous(limits = c(0, 50), breaks = seq(0, 50, by = 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 55), breaks = seq(0, 55, by = 10), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 50000), breaks = seq(0, 50000, by = 5000), expand = c(0.03, 0)) +
-  geom_text(x = max(as.numeric(result_disc$Num_Samples)), y = max(result_disc$PAGER_CPU_INC), label = paste("CPU:","y = ", round(slope_CPU, 5), "x + ", round(intercept_CPU, 4)), hjust = 1.5, vjust = 14) +
+  geom_text(x = max(as.numeric(result_disc$Num_Samples)), y = max(result_disc$PAGER_CPU_INC), label = paste("CPU:","y = ", round(slope_CPU, 5), "x + ", round(intercept_CPU, 4)), hjust = 1.5, vjust = 13) +
   geom_text(x = max(as.numeric(result_disc$Num_Samples)), y = max(result_disc$PAGER_GPU_INC), label = paste("GPU:","y = ", round(slope_GPU, 5), "x + ", round(intercept_GPU, 4)), hjust = 1.5, vjust = 4) +
   theme(
     axis.title = element_text(size = 12, face = "bold"), 
@@ -186,6 +186,8 @@ ggplot(result_disc, aes(x = Num_Samples)) +
 ggsave("Discrete_ComputeTime_vs_EDGE.pdf", plot = last_plot(), device = "pdf", width = 10, height = 7, units = "in", useDingbats=FALSE)
 
 ## Continuous Plotting
+setwd("/path/to/folder/")
+
 # Fit a linear model for CPU
 lm_CPU_cont <- lm(PAGER_CPU_INC ~ Num_Samples, data = result_cont)
 lm_GPU_cont <- lm(PAGER_GPU_INC ~ Num_Samples, data = result_cont)
@@ -205,10 +207,10 @@ ggplot(result_cont, aes(x = Num_Samples)) +
   #geom_smooth(method = "lm", se = FALSE, color = "red") +  
   labs(x = "Sample Size", y = "Speed Factor Increase") + 
   ggtitle("PAGER CPU/GPU Speed Increase over EDGE (Continuous Phenotype)") +  
-  scale_y_continuous(limits = c(0, 41), breaks = seq(0, 41, by = 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 56), breaks = seq(0, 56, by = 10), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 50000), breaks = seq(0, 50000, by = 5000), expand = c(0.03, 0)) +
   geom_text(x = max(as.numeric(result_cont$Num_Samples)), y = max(result_cont$PAGER_CPU_INC), label = paste("CPU:","y = ", round(slope_CPU_cont, 5), "x + ", round(intercept_CPU_cont, 4)), hjust = 1.5, vjust = 12) +
-  geom_text(x = max(as.numeric(result_cont$Num_Samples)), y = max(result_cont$PAGER_GPU_INC), label = paste("GPU:","y = ", round(slope_GPU_cont, 5), "x + ", round(intercept_GPU_cont, 4)), hjust = 1.5, vjust = 4) +
+  geom_text(x = max(as.numeric(result_cont$Num_Samples)), y = max(result_cont$PAGER_GPU_INC), label = paste("GPU:","y = ", round(slope_GPU_cont, 5), "x + ", round(intercept_GPU_cont, 4)), hjust = 1.5, vjust = 5) +
   theme(
     axis.title = element_text(size = 12, face = "bold"), 
     axis.text = element_text(size = 11), 

@@ -325,7 +325,7 @@ for iteration in range(num_iterations):
                         }, ignore_index=True)
 
                         print("Iteration: ", iteration, "Num_Samples: ", num_samples_setting, "Case_Control_Ratio: ", case_control_ratio, "MAFA: ", MAFA_setting, "PEN_DIFF: ", PEN_DIFF_setting, "additive_pvalue: ", original_pvalue, "EDGE_pvalue: ", EDGE_pvalue, "PAGER_pvalue: ", PAGER_pvalue, "EDGE_TIME: ", edge_elapsed_time, "PAGER_TIME: ", pager_elapsed_time)
-        results_df.to_csv("/home/matsumoton/common/git/pager/null_effect_simulation_results_"+str(t)+"_"+str(iteration)+".csv", index=False)
+        results_df.to_csv("/path/to/save/null_effect_simulation_results_"+str(t)+"_"+str(iteration)+".csv", index=False)
 
 
 # Print the total execution time for calculate_edge_encoding_values

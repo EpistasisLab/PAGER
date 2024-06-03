@@ -1,17 +1,19 @@
 library(ggplot2)
 library(dplyr)
 
+setwd("/path/to/folder")
+
 ## Continuous
 
 # Import files
-add <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_additive_simulation_results.csv")
-dom <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_dominant_simulation_results.csv")
-rec <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_recessive_simulation_results.csv")
-subadd <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_subadditive_simulation_results.csv")
-supadd <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_superadditive_simulation_results.csv")
-het <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_heterosis_simulation_results.csv")
-und <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_underdominant_simulation_results.csv")
-ovd <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_non_discrete/clarite_cont_overdominant_simulation_results.csv")
+add <- read.csv("/path/to/read/additive_continuous_simulations.csv")
+dom <- read.csv("/path/to/read/dominant_continuous_simulations.csv")
+rec <- read.csv("/path/to/read/recessive_continuous_simulations.csv")
+subadd <- read.csv("/path/to/read/subadditive_continuous_simulations.csv")
+supadd <- read.csv("/path/to/read/superadditive_continuous_simulations.csv")
+het <- read.csv("/path/to/read/heterosis_continuous_simulations.csv")
+und <- read.csv("/path/to/read/underdominant_continuous_simulations.csv")
+ovd <- read.csv("/path/to/read/overdominant_continuous_simulations.csv")
 
 calculate_stats <- function(column) {
   n <- sum(!is.na(column)) # Count of non-NA values for sample size
@@ -174,17 +176,17 @@ combined_stats_df <- rbind(stats_df_add, stats_df_subadd, stats_df_supadd, stats
 # write to disk
 write.csv(combined_stats_df, "cont_pvals.csv", row.names = FALSE)
 
-## Discrete
+## Binary
 
 # Import files
-add <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_additive_simulation_results.csv")
-dom <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_dominant_simulation_results.csv")
-rec <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_recessive_simulation_results.csv")
-subadd <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_subadditive_simulation_results.csv")
-supadd <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_superadditive_simulation_results.csv")
-het <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_heterosis_simulation_results.csv")
-und <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_underdominant_simulation_results.csv")
-ovd <- read.csv("~/Library/CloudStorage/Box-Box/CedarsSinai/AutoQTL/EDGE/Results/For manuscript/all simulation tests/single_snp_discrete/clarite_overdominant_simulation_results.csv")
+add <- read.csv("/path/to/read/additive_discrete_simulations.csv")
+dom <- read.csv("/path/to/read/dominant_discrete_simulations.csv")
+rec <- read.csv("/path/to/read/recessive_discrete_simulations.csv")
+subadd <- read.csv("/path/to/read/subadditive_discrete_simulations.csv")
+supadd <- read.csv("/path/to/read/superadditive_discrete_simulations.csv")
+het <- read.csv("/path/to/read/heterosis_discrete_simulations.csv")
+und <- read.csv("/path/to/read/underdominant_discrete_simulations.csv")
+ovd <- read.csv("/path/to/read/overdominant_discrete_simulations.csv")
 
 calculate_stats <- function(column) {
   n <- sum(!is.na(column)) # Count of non-NA values for sample size
