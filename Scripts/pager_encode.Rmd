@@ -87,7 +87,7 @@ pager_encode <- function(genotypes, phenotype) {
 ## STEP 3 - PAGER encode Dataset 1 - Continuous Phenotype
 ```{r setup, include=TRUE}
 # Read the data from the csv file
-data_continuous_phenotype <- read.csv('/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_cont.csv')
+data_continuous_phenotype <- read.csv('./PAGER/data/sample_data_cont.csv')
 
 # Extract the genotypes and the phenotype from the data
 genotype_columns <- data_continuous_phenotype[, -ncol(data_continuous_phenotype)]
@@ -100,16 +100,16 @@ result <- pager_encode(genotype_columns, phenotype)
 pager_encoded_genotype <- cbind(result[[1]], phenotype)
 
 # Write the PAGER encoded data to a csv file
-write.csv(pager_encoded_genotype, file = '/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_cont_pager_encoded.csv', row.names = FALSE)
+write.csv(pager_encoded_genotype, file = 'path/to/folder/sample_data_cont_pager_encoded.csv', row.names = FALSE)
 
 # Write the missing genotypes dataframe to a csv file
-write.csv(result[[2]], file = '/Users/ghosha/Documents/VSCode Projects/pager/data/missing_genotypes.csv', row.names = FALSE)
+write.csv(result[[2]], file = 'path/to/folder/missing_genotypes.csv', row.names = FALSE)
 ```
 
 ## STEP 4 - PAGER encode Dataset 2 - Discrete Phenotype
 ```{r setup, include=TRUE}
 # Read the data from the csv file
-data_continuous_phenotype <- read.csv('/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_disc.csv')
+data_continuous_phenotype <- read.csv('./PAGER/data/sample_data_disc.csv')
 
 # Extract the genotypes and the phenotype from the data
 genotype_columns <- data_continuous_phenotype[, -ncol(data_continuous_phenotype)]
@@ -122,9 +122,9 @@ result <- pager_encode(genotype_columns, phenotype)
 pager_encoded_genotype <- cbind(result[[1]], phenotype)
 
 # Write the PAGER encoded data to a csv file
-write.csv(pager_encoded_genotype, file = '/Users/ghosha/Documents/VSCode Projects/pager/data/sample_data_disc_pager_encoded.csv', row.names = FALSE)
+write.csv(pager_encoded_genotype, file = 'path/to/folder/sample_data_disc_pager_encoded.csv', row.names = FALSE)
 
 # Write the missing genotypes dataframe to a csv file
-write.csv(result[[2]], file = '/Users/ghosha/Documents/VSCode Projects/pager/data/missing_genotypes.csv', row.names = FALSE)
+write.csv(result[[2]], file = 'path/to/folder/missing_genotypes.csv', row.names = FALSE)
 ```
 
