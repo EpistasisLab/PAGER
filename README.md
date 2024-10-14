@@ -30,11 +30,11 @@ Let:
 
 For each SNP, PAGER calculates the following encoding values (diallelic, non-epistatic example):
 
-*PAGER EncodingAA = x̄AA − x̄AA = 0* (anchor) 
+- *PAGER EncodingAA = x̄AA − x̄AA = 0* (anchor) 
 
-*PAGER EncodingAa = x̄Aa − x̄AA*
+- *PAGER EncodingAa = x̄Aa − x̄AA*
 
-*PAGER Encodingaa = x̄aa − x̄AA*
+- *PAGER Encodingaa = x̄aa − x̄AA*
 
 ### Normalization
 
