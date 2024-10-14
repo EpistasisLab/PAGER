@@ -14,7 +14,7 @@ PAGER : Phenotype Adjusted Genotype Encoding and Ranking
 - Flexible Genotype Encoding: Automatically adjusts to capture a range of inheritance models (additive, dominant, recessive, heterosis) on a SNP-by-SNP basis.
 - Phenotype-Driven: Uses phenotypic information to generate genotype encodings, reflecting each variant’s true inheritance model.
 - Computational Efficiency: PAGER can be employed in any coding language and can be parallelized and leveraged using GPUs for robust computational efficiency.
-- Broad Applicability: Supports both binary and continuous phenotypes, as well as multi-locus epistasis investigations.
+- Broad Applicability: Supports both binary (case/control) and continuous phenotypes, as well as multi-locus epistasis investigations.
 
 ## Methodology
 
@@ -24,7 +24,7 @@ The encoding is computed as follows:
 
 Let:
 
-- *x̄AA*, *x̄Aa*, and *x̄aa* represent the mean phenotype values (proportion of cases [p̂] in case/control studies) for the genotype classes AA, Aa, and aa, respectively, at each SNP.
+- *x̄AA*, *x̄Aa*, and *x̄aa* represent the mean phenotype values (proportion of cases *[p̂]* in case/control studies) for the genotype classes AA, Aa, and aa, respectively, at each SNP.
 
 - The AA class is used as an anchor point for encoding (set to 0).
 
