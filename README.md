@@ -48,7 +48,7 @@ These raw encodings are then normalized using min-max scaling to fall between 0 
 
 ## Usage and Examples
 
-We provide both univariate and epistatic code usage examples of PAGER in the [Scripts](https://github.com/EpistasisLab/PAGER/tree/main/Scripts) folder in both Python and R programming languages.
+We provide both univariate and epistatic code usage examples of PAGER in the [Scripts](https://github.com/EpistasisLab/PAGER/tree/main/Scripts) directory in both Python and R programming languages. Data used to run these examples are in the [Data](https://github.com/EpistasisLab/PAGER/tree/main/data) directory.
 
 ## Relevant Publications
 
