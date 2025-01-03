@@ -7,14 +7,14 @@
 PAGER : Phenotype Adjusted Genotype Encoding and Ranking
 ==================================
 
-**PAGER** is a genotype encoding method specifically designed for improving the detection of deviations from additivity in genotype-phenotype associations and investigating epistasis. It provides a computationally efficient means to capture a variety of inheritance models, including additive, dominant, recessive, and heterotic, without the need for multiple encodings or increased computational cost. By normalizing the relative phenotypic differences between genotypic classes or multi-locus genotypes (MLGs), PAGER reveals novel insights into genetic associations and potential sources of missing heritability.
+**PAGER** is a genotype encoding method specifically designed for improving the detection of deviations from additivity in genotype-phenotype associations. It provides a computationally efficient means to capture a variety of inheritance models, including additive, dominant, recessive, and heterotic, without the need for multiple encodings or increased computational cost. By normalizing the relative phenotypic differences between genotypic classes, PAGER reveals novel insights into genetic associations and potential sources of missing heritability.
 
 ## Key Features
 
 - Flexible Genotype Encoding: Automatically adjusts to capture a range of inheritance models (additive, dominant, recessive, heterosis) on a SNP-by-SNP basis.
 - Phenotype-Driven: Uses phenotypic information to generate genotype encodings, reflecting each variant’s true inheritance model.
 - Computational Efficiency: PAGER can be employed in any coding language and can be parallelized and leveraged using GPUs for robust computational efficiency.
-- Broad Applicability: Supports both binary (case/control) and continuous phenotypes, as well as multi-locus epistasis investigations.
+- Broad Applicability: Supports both binary (case/control) and continuous phenotypes, as well as multi-allelic systems.
 
 ## Methodology
 
@@ -44,11 +44,11 @@ These raw encodings are then normalized using min-max scaling to fall between 0 
 
 1.	**Phenotype-Specific Adjustments:** By directly calculating the phenotypic differences between genotype classes, PAGER dynamically adjusts to the specific inheritance pattern observed in the data, whether additive, dominant, recessive, or heterotic.
 2.	**Scalability:** The simple mathematical operations make PAGER computationally efficient, particularly for large-scale studies. GPU support and parallelization further accelerate computation.
-3.	**Extensibility:** The method can be applied beyond single-locus analysis to multi-locus genotype interactions (epistasis). PAGER can also handle multi-allelic systems and variants. Extension is achieved by using one genotype/MLG as the anchor and computing the relative differences for others.
+3.	**Extensibility:** PAGER can handle multi-allelic systems and variants. Extension is achieved by using one genotype as the anchor and computing the relative differences for others.
 
 ## Usage and Examples
 
-We provide both univariate and epistatic code usage examples of PAGER in the [Scripts](https://github.com/EpistasisLab/PAGER/tree/main/Scripts) directory in both Python and R programming languages. Data used to run these examples are in the [Data](https://github.com/EpistasisLab/PAGER/tree/main/data) directory.
+We provide code usage examples of PAGER in the [Scripts](https://github.com/EpistasisLab/PAGER/tree/main/Scripts) directory in both Python and R programming languages. Data used to run these examples are in the [Data](https://github.com/EpistasisLab/PAGER/tree/main/data) directory.
 
 ## Relevant Publications
 
