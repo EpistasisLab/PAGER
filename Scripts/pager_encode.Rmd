@@ -31,6 +31,8 @@ pager_encode <- function(genotypes, phenotype) {
   missing_genotypes_df <- data.frame(SNP_NAME = character(), MISSING_GENOTYPES = character(), stringsAsFactors = FALSE)
   
   # Iterate through the columns of the genotypes dataframe to calculate the PAGER encoding for each SNP
+  pager_encoding_info <- list() # Store encoding information
+  
   for (column in colnames(genotypes)) {
     
     # Extract the single SNP from the genotypes dataframe
@@ -45,7 +47,7 @@ pager_encode <- function(genotypes, phenotype) {
     # Check for missing genotypic classes
     missing_genotypes <- setdiff(c(0, 1, 2), unique_genotypes)
     
-    # Print the missing genotypes and also add them to a dataframe to output at the end.
+    # Log missing genotypes
     if (length(missing_genotypes) > 0) {
       cat(paste("Missing genotypes for", column, ":", toString(missing_genotypes), "\n"))
       snp_missing_genotype_df <- data.frame(SNP_NAME = column, MISSING_GENOTYPES = toString(missing_genotypes), stringsAsFactors = FALSE)
@@ -58,7 +60,7 @@ pager_encode <- function(genotypes, phenotype) {
       next
     }
     
-    # Calculate the phenotypic mean per genotypic class for non-NA genotypes
+    # Calculate phenotypic mean per genotypic class for non-NA genotypes
     geno_aggregations <- snp_df %>%
       filter(!is.na(genotype)) %>%
       group_by(genotype) %>%
@@ -69,62 +71,103 @@ pager_encode <- function(genotypes, phenotype) {
     # Use the PAGER formula
     anchor_mean <- geno_aggregations[which.min(geno_aggregations$mean_phenotype), 'mean_phenotype'] # anchor = 0 when all three genotypes are present
     geno_aggregations$rel_dist <- as.numeric(geno_aggregations$mean_phenotype) - as.numeric(anchor_mean)
-    
-  
     geno_aggregations$normalized_rel_dist <- (geno_aggregations$rel_dist - min(geno_aggregations$rel_dist)) / (max(geno_aggregations$rel_dist) - min(geno_aggregations$rel_dist))
     
     # Assign the normalized values to the corresponding SNP column
     pager_encoded_genotypes[[column]] <- geno_aggregations$normalized_rel_dist[match(snp, geno_aggregations$genotype)]
     
+    # Store encoding information for application to test set
+    pager_encoding_info[[column]] <- geno_aggregations
   }
   
-  # Return the PAGER encoded genotypes and the missing genotypes dataframe
-  return(list(pager_encoded_genotypes, missing_genotypes_df))
+  # Return the PAGER encoded genotypes, missing genotypes dataframe, and encoding information
+  return(list(pager_encoded_genotypes, missing_genotypes_df, pager_encoding_info))
 }
 ```
 
+## STEP 3 - Function to apply PAGER encoding to a new dataset
+```{r setup, include=TRUE}
+# Function to apply PAGER encoding to a new dataset
+apply_pager_encoding <- function(genotypes, encoding_info) {
+  pager_encoded_genotypes <- data.frame(matrix(ncol = ncol(genotypes), nrow = nrow(genotypes)))
+  colnames(pager_encoded_genotypes) <- colnames(genotypes)
+  
+  for (column in colnames(genotypes)) {
+    snp <- genotypes[[column]]
+    encoding <- encoding_info[[column]]
+    if (!is.null(encoding)) {
+      pager_encoded_genotypes[[column]] <- encoding$normalized_rel_dist[match(snp, encoding$genotype)]
+    } else {
+      pager_encoded_genotypes[[column]] <- snp
+    }
+  }
+  return(pager_encoded_genotypes)
+}
+```
 
-## STEP 3 - PAGER encode Dataset 1 - Continuous Phenotype
+## STEP 4 - PAGER encode Dataset 1 - Continuous Phenotype
 ```{r setup, include=TRUE}
 # Read the data from the csv file
 data_continuous_phenotype <- read.csv('./PAGER/data/sample_data_cont.csv')
 
-# Extract the genotypes and the phenotype from the data
+# Split into genotypes and phenotype
 genotype_columns <- data_continuous_phenotype[, -ncol(data_continuous_phenotype)]
 phenotype <- data_continuous_phenotype[, ncol(data_continuous_phenotype)]
 
-# Call the 'pager_encode' function to encode the genotypes using the PAGER formula
-result <- pager_encode(genotype_columns, phenotype)
+# Split the data into training and testing sets
+set.seed(123) # for reproducibility
+train_index <- createDataPartition(phenotype, p = 0.7, list = FALSE)
+train_genotypes <- genotype_columns[train_index, ]
+train_phenotype <- phenotype[train_index]
+test_genotypes <- genotype_columns[-train_index, ]
+test_phenotype <- phenotype[-train_index]
 
-# Combine the PAGER encoded genotypes with the phenotype
-pager_encoded_genotype <- cbind(result[[1]], phenotype)
+# Encode the training dataset
+train_result <- pager_encode(train_genotypes, train_phenotype)
 
-# Write the PAGER encoded data to a csv file
-write.csv(pager_encoded_genotype, file = 'path/to/folder/sample_data_cont_pager_encoded.csv', row.names = FALSE)
+# Apply the PAGER encoding to the test dataset
+test_encoded_genotypes <- apply_pager_encoding(test_genotypes, train_result[[3]])
 
-# Write the missing genotypes dataframe to a csv file
-write.csv(result[[2]], file = 'path/to/folder/missing_genotypes.csv', row.names = FALSE)
+# Combine the PAGER encoded genotypes with the phenotypes
+train_pager_encoded <- cbind(train_result[[1]], train_phenotype)
+test_pager_encoded <- cbind(test_encoded_genotypes, test_phenotype)
+
+# Write the encoded datasets to CSV
+write.csv(train_pager_encoded, file = 'path/to/folder/train_pager_cont_encoded.csv', row.names = FALSE)
+write.csv(test_pager_encoded, file = 'path/to/folder/test_pager_cont_encoded.csv', row.names = FALSE)
+write.csv(train_result[[2]], file = 'path/to/folder/missing_cont_genotypes.csv', row.names = FALSE)
 ```
 
-## STEP 4 - PAGER encode Dataset 2 - Discrete Phenotype
+## STEP 5 - PAGER encode Dataset 2 - Discrete Phenotype
 ```{r setup, include=TRUE}
 # Read the data from the csv file
-data_continuous_phenotype <- read.csv('./PAGER/data/sample_data_disc.csv')
+data_discrete_phenotype <- read.csv('./PAGER/data/sample_data_dis.csv')
 
-# Extract the genotypes and the phenotype from the data
-genotype_columns <- data_continuous_phenotype[, -ncol(data_continuous_phenotype)]
-phenotype <- data_continuous_phenotype[, ncol(data_continuous_phenotype)]
+# Split into genotypes and phenotype
+genotype_columns <- data_discrete_phenotype[, -ncol(data_discrete_phenotype)]
+phenotype <- data_discrete_phenotype[, ncol(data_discrete_phenotype)]
 
-# Call the 'pager_encode' function to encode the genotypes using the PAGER formula
-result <- pager_encode(genotype_columns, phenotype)
+# Split the data into training and testing sets
+set.seed(123) # for reproducibility
+train_index <- createDataPartition(phenotype, p = 0.7, list = FALSE)
+train_genotypes <- genotype_columns[train_index, ]
+train_phenotype <- phenotype[train_index]
+test_genotypes <- genotype_columns[-train_index, ]
+test_phenotype <- phenotype[-train_index]
 
-# Combine the PAGER encoded genotypes with the phenotype
-pager_encoded_genotype <- cbind(result[[1]], phenotype)
+# Encode the training dataset
+train_result <- pager_encode(train_genotypes, train_phenotype)
 
-# Write the PAGER encoded data to a csv file
-write.csv(pager_encoded_genotype, file = 'path/to/folder/sample_data_disc_pager_encoded.csv', row.names = FALSE)
+# Apply the PAGER encoding to the test dataset
+test_encoded_genotypes <- apply_pager_encoding(test_genotypes, train_result[[3]])
 
-# Write the missing genotypes dataframe to a csv file
-write.csv(result[[2]], file = 'path/to/folder/missing_genotypes.csv', row.names = FALSE)
+# Combine the PAGER encoded genotypes with the phenotypes
+train_pager_encoded <- cbind(train_result[[1]], train_phenotype)
+test_pager_encoded <- cbind(test_encoded_genotypes, test_phenotype)
+
+# Write the encoded datasets to CSV
+write.csv(train_pager_encoded, file = 'path/to/folder/train_pager_dis_encoded.csv', row.names = FALSE)
+write.csv(test_pager_encoded, file = 'path/to/folder/test_pager_dis_encoded.csv', row.names = FALSE)
+write.csv(train_result[[2]], file = 'path/to/folder/missing_dis_genotypes.csv', row.names = FALSE)
 ```
 
